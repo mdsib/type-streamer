@@ -1,14 +1,3 @@
-$.ajax( {
-   url: 'https://en.wikipedia.org/w/api.php',
-   data: {action: 'parse', prop: 'text', page: 'Hinduism', format: 'json'},
-   dataType: 'jsonp',
-   type: 'POST',
-   headers: { 'Api-User-Agent': 'supertyper/1.0 (https://example.org/supertyper/; mdsiboldi@gmail.com)', 'Origin': 'http://massimo.cool' },
-   success: function(data) {
-      var text = $(data.parse.text['*']).find('p').text().split(/\s+|\[\d+\]/);
-      debugger;
-   }
-});
 
 var WordScreen = React.createClass({
    render: function() {
@@ -69,9 +58,24 @@ var Application = React.createClass({
    getInitialState: function() {
       return {
          words: ['an', 'amber', 'create', 'cradle'],
+         keys: ['a','s','d','f','g','h','j','k','l'],
          wordIdx: 0,
          streak: 0
       }
+   },
+   componentDidMount: function() {
+      this.req = $.ajax({
+         url: 'https://en.wikipedia.org/w/api.php',
+         data: {action: 'query', prop: 'extracts', explaintext: true, titles: 'React (JavaScript library)', format: 'json'},
+         dataType: 'jsonp',
+         type: 'POST',
+         headers: { 'Api-User-Agent': 'supertyper/1.0 (https://example.org/supertyper/; mdsiboldi@gmail.com)', 'Origin': 'http://massimo.cool' },
+         success: function(data) {
+            //var regex = new Regex('\s|' + this.state.keys.join('*|'
+            var words = data.query.pages[Object.keys(data.query.pages)[0]].extract.split(/\s/).slice(0, 50);
+            this.setState({words: words, wordIdx: 0, streak: 0});
+         }.bind(this)
+      });
    },
    nextWord: function() {
       this.state.words.push(this.state.words.shift());
@@ -83,7 +87,11 @@ var Application = React.createClass({
          <div>
             <h1>The App</h1> 
             <WordScreen words={this.state.words} />
-            <TypeArea currentWord={this.state.words[this.state.wordIdx]} nextWord={this.nextWord} streak={this.state.streak} updateStreak={this.updateStreak}/>
+            <TypeArea currentWord={this.state.words[this.state.wordIdx]}
+               nextWord={this.nextWord} 
+               streak={this.state.streak} 
+               updateStreak={this.updateStreak}
+            />
             <p style={{fontSize: (12 + this.state.streak / 5) + 'px'}}>{this.state.streak}</p>
          </div>
       )
