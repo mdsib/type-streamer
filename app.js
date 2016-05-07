@@ -58,7 +58,6 @@ var Application = React.createClass({
    getInitialState: function() {
       return {
          words: ['an', 'amber', 'create', 'cradle'],
-         keys: ['a','s','d','f','g','h','j','k','l'],
          wordIdx: 0,
          streak: 0
       }
@@ -71,7 +70,6 @@ var Application = React.createClass({
          type: 'POST',
          headers: { 'Api-User-Agent': 'supertyper/1.0 (https://example.org/supertyper/; mdsiboldi@gmail.com)', 'Origin': 'http://massimo.cool' },
          success: function(data) {
-            //var regex = new Regex('\s|' + this.state.keys.join('*|'
             var words = data.query.pages[Object.keys(data.query.pages)[0]].extract.split(/\s/).slice(0, 50);
             this.setState({words: words, wordIdx: 0, streak: 0});
          }.bind(this)
