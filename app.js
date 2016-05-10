@@ -51,16 +51,46 @@ var TypeArea = React.createClass({
 });
 
 var Application = React.createClass({
-   updateStreak: function(isGood) {
-      this.state.streak = isGood ? this.state.streak + 1 : 0;
-      this.setState(this.state);
-   },
+
    getInitialState: function() {
+      var keys = 'asdfjkl;';
       return {
-         words: ['an', 'amber', 'create', 'cradle'],
+         words: this.generateNonsense(keys, 20),
+         keys: keys,
          wordIdx: 0,
-         streak: 0
+         streak: 0,
+         hiscore: {streak: 0, timeStart: 0, timeEnd:  0},
+         timeStart: 0,
       }
+   },
+   updateStreak: function(isGood) {
+      if (this.state.timeStart == 0) this.state.timeStart = Date.now();
+      if (isGood) {
+         this.state.streak++;
+         if (this.state.streak > this.state.hiscore.streak) {
+            this.state.hiscore =  {streak: this.state.streak, timeStart: this.state.timeStart, timeEnd: Date.now()};
+         }
+      }
+      else {
+         this.state.streak = 0;
+         this.state.timeStart = new Date;
+      }
+      this.setState(this.state);
+      
+   },
+   generateNonsense: function(keys, n) {
+      var arr = [];
+      while (n-- > 0) {
+         var word = '';
+         var wordLength = 3 + Math.floor(Math.random() * 3);
+         while (wordLength-- > 0) {
+            word += keys[Math.floor(Math.random() * keys.length)];
+         }
+         arr.push(word);
+      }
+      return arr;
+   },
+   setScore: function() {
    },
    componentDidMount: function() {
       this.req = $.ajax({
@@ -76,9 +106,9 @@ var Application = React.createClass({
       });
    },
    nextWord: function() {
-      this.state.words.push(this.state.words.shift());
+      this.state.words.shift();
+      this.state.words.push(this.generateNonsense(this.state.keys, 1));
       this.setState(this.state);
-      console.log(this.state.words);
    },
    render: function() {
       return (
@@ -91,6 +121,7 @@ var Application = React.createClass({
                updateStreak={this.updateStreak}
             />
             <p style={{fontSize: (12 + this.state.streak / 5) + 'px'}}>{this.state.streak}</p>
+            <h2>TOP SCORE: {this.state.hiscore.streak}, {this.state.hiscore.streak * 1000 * 60 / (this.state.hiscore.timeEnd - this.state.hiscore.timeStart)}</h2>
          </div>
       )
    }
