@@ -1,4 +1,3 @@
-
 var WordScreen = React.createClass({
    genView: function(idx) {
       return {
@@ -72,7 +71,9 @@ var Application = React.createClass({
          keys: keys,
          wordIdx: 0,
          streak: 0,
-         hiscore: {streak: 0, timeStart: 0, timeEnd:  0},
+         hiscore: {streak: Cookies.get('streak') || 0, 
+                   timeStart: parseInt(Cookies.get('timeStart')) || 0, 
+                   timeEnd: parseInt(Cookies.get('timeEnd')) || 0},
          timeStart: 0,
          strokes: 0,
          mistakes: 0
@@ -85,7 +86,12 @@ var Application = React.createClass({
          this.state.strokes++;
          this.state.streak++;
          if (this.state.streak > this.state.hiscore.streak) {
-            this.state.hiscore =  {streak: this.state.streak, timeStart: this.state.timeStart, timeEnd: Date.now()};
+            this.state.hiscore =  {streak: this.state.streak, 
+                                   timeStart: this.state.timeStart, 
+                                   timeEnd: Date.now()};
+            Cookies.set('streak', this.state.streak);
+            Cookies.set('timeStart', this.state.timeStart);
+            Cookies.set('timeEnd', Date.now());
          }
       }
       else {
@@ -142,6 +148,7 @@ var Application = React.createClass({
             />
             <p style={{fontSize: (12 + this.state.streak / 5) + 'px'}}>{this.state.streak}</p>
             <h2>TOP SCORE: {this.state.hiscore.streak}, {this.state.hiscore.streak * 1000 * 60 / (this.state.hiscore.timeEnd - this.state.hiscore.timeStart)}</h2>
+            <h2>{this.state.hiscore.streak}, {this.state.hiscore.timeEnd}, {this.state.hiscore.timeStart}</h2>
             <h2>{this.state.strokes * 100 / (this.state.strokes + this.state.mistakes)}</h2>
          </div>
       )
