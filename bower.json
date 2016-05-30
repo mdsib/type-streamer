@@ -1,0 +1,24 @@
+{
+  "name": "type-streamer",
+  "homepage": "https://github.com/mdsib/type-streamer",
+  "authors": [
+    "Massimo Siboldi <mdsiboldi@gmail.com>"
+  ],
+  "description": "Type with no mistakes to improve your typing skills.",
+  "main": "?",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "react": "^15.1.0",
+    "babel": "*",
+    "jquery": "^2.2.4",
+    "js-cookie": "^2.1.2"
+  }
+}
