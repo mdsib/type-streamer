@@ -8,12 +8,11 @@ import {expect} from 'chai';
 import WordScreen from '../../src/components/WordScreen';
 
 describe('WordScreen', () => {
+  const words= ['this', 'is', 'a', 'cool', 'and', 'radical', 'test', 'yeah']
   it('renders first word and surrounding words correctly', () => {
     const component = renderIntoDocument(
       <WordScreen
-        words={
-          ['this', 'is', 'a', 'cool', 'and', 'radical', 'test', 'yeah']
-        }
+        words={words}
         wordIdx={0}
       />
     );
@@ -31,9 +30,7 @@ describe('WordScreen', () => {
   it('renders middle word and surrounding words correctly', () => {
     const component = renderIntoDocument(
       <WordScreen
-        words={
-          ['this', 'is', 'a', 'cool', 'and', 'radical', 'test', 'yeah']
-        }
+        words={words}
         wordIdx={4}
       />
     );
@@ -51,9 +48,7 @@ describe('WordScreen', () => {
   it('renders last word and surrounding words correctly', () => {
     const component = renderIntoDocument(
       <WordScreen
-        words={
-          ['this', 'is', 'a', 'cool', 'and', 'radical', 'test', 'yeah']
-        }
+        words={words}
         wordIdx={7}
       />
     );
