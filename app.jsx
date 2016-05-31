@@ -1,3 +1,12 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Cookies from 'js-cookie';
+import $ from 'jquery';
+
+console.log('hi');
+console.log(Cookies.get);
+console.log('oh hi again');
+
 var WordScreen = React.createClass({
    genView: function(idx) {
       return {
@@ -23,43 +32,43 @@ var WordScreen = React.createClass({
 });
 
 var TypeArea = React.createClass({
-   getInitialState: function() {
-      return {movingForward: true}
-   },
-   isCorrect: function() {
-      var inputy = document.getElementById('inputy');
+  getInitialState: function() {
+    return {movingForward: true}
+  },
+  isCorrect: function() {
+    var correctString = this.props.currentWord + ' ';
+    var currentString = this.refs.wordInput && this.refs.wordInput.value;
+    return correctString.indexOf(currentString) == 0;
+  },
+  handlePress: function(e) {
+    if (e.keyCode == 8) {
+      this.setState({movingForward: false});
+    }
+    else {
+      this.setState({movingForward: true});
+    }
+  },
+  handleChange: function(e) {
+    if (this.state.movingForward) {
       var correctString = this.props.currentWord + ' ';
-      var currentString = inputy && inputy.value;
-      return correctString.indexOf(currentString) == 0;
-   },
-   handlePress: function(e) {
-      if (e.keyCode == 8) {
-         this.setState({movingForward: false});
+      this.props.updateStreak(this.isCorrect());
+      if (e.target.value == correctString) {
+        console.log("CORRECT");
+        e.target.value = '';
+        this.props.nextWord();
       }
-      else {
-         this.setState({movingForward: true});
-      }
-   },
-   handleChange: function(e) {
-      if (this.state.movingForward) {
-         var correctString = this.props.currentWord + ' ';
-         this.props.updateStreak(this.isCorrect());
-         if (e.target.value == correctString) {
-            console.log("CORRECT");
-            e.target.value = '';
-            this.props.nextWord();
-         }
-      }
-      else {
-         this.props.updateStreak(false, true);
-      }
-   },
-   render: function() {
-      console.log(this);
-      return (
-         <input style={{color: this.isCorrect() ? 'green' : 'red'}} id="inputy" onChange={this.handleChange} onKeyDown={this.handlePress}/>
-      );
-   }
+    }
+    else {
+      this.props.updateStreak(false, true);
+    }
+  },
+  render: function() {
+    console.log(this);
+    return (
+      <input
+      style={{color: this.isCorrect() ? 'green' : 'red'}} ref="wordInput" onChange={this.handleChange} onKeyDown={this.handlePress}/>
+    );
+  }
 });
 
 var Application = React.createClass({
@@ -71,8 +80,8 @@ var Application = React.createClass({
          keys: keys,
          wordIdx: 0,
          streak: 0,
-         hiscore: {streak: Cookies.get('streak') || 0, 
-                   timeStart: parseInt(Cookies.get('timeStart')) || 0, 
+         hiscore: {streak: Cookies.get('streak') || 0,
+                   timeStart: parseInt(Cookies.get('timeStart')) || 0,
                    timeEnd: parseInt(Cookies.get('timeEnd')) || 0},
          timeStart: 0,
          strokes: 0,
@@ -81,17 +90,17 @@ var Application = React.createClass({
       }
    },
    updateStreak: function(isGood, isBackspace) {
-      if (this.state.timeStart == 0) this.state.timeStart = Date.now();
+      if (this.state.timeStart == 0) this.state.timeStart = +Date.now();
       if (isGood) {
          this.state.strokes++;
          this.state.streak++;
          if (this.state.streak > this.state.hiscore.streak) {
-            this.state.hiscore =  {streak: this.state.streak, 
-                                   timeStart: this.state.timeStart, 
-                                   timeEnd: Date.now()};
+            this.state.hiscore =  {streak: this.state.streak,
+                                   timeStart: this.state.timeStart,
+                                   timeEnd: +Date.now()};
             Cookies.set('streak', this.state.streak);
             Cookies.set('timeStart', this.state.timeStart);
-            Cookies.set('timeEnd', Date.now());
+            Cookies.set('timeEnd', +Date.now());
          }
       }
       else {
@@ -102,7 +111,7 @@ var Application = React.createClass({
          this.state.timeStart = new Date;
       }
       this.setState(this.state);
-      
+
    },
    generateNonsense: function(keys, n) {
       var arr = [];
@@ -139,11 +148,11 @@ var Application = React.createClass({
    render: function() {
       return (
          <div>
-            <h1>The App</h1> 
+            <h1>The App</h1>
             <WordScreen words={this.state.words} wordIdx={this.state.wordIdx} />
             <TypeArea currentWord={this.state.words[this.state.wordIdx]}
-               nextWord={this.nextWord} 
-               streak={this.state.streak} 
+               nextWord={this.nextWord}
+               streak={this.state.streak}
                updateStreak={this.updateStreak}
             />
             <p style={{fontSize: (12 + this.state.streak / 5) + 'px'}}>{this.state.streak}</p>
