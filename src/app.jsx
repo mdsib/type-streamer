@@ -3,33 +3,7 @@ import ReactDOM from 'react-dom';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
 
-console.log('hi');
-console.log(Cookies.get);
-console.log('oh hi again');
-
-var WordScreen = React.createClass({
-   genView: function(idx) {
-      return {
-         before: [this.props.words[idx - 3],
-                  this.props.words[idx - 2],
-                  this.props.words[idx - 1]
-                 ],
-         focus: this.props.words[idx],
-         after:  [this.props.words[idx + 1],
-                  this.props.words[idx + 2],
-                  this.props.words[idx + 3]
-                 ]
-      }
-   },
-   render: function() {
-      var currentWords = this.genView(this.props.wordIdx);
-      return (
-         <div className="test">
-            <span id="word-screen-before">{currentWords.before.join(' ')}</span> <span id="word-screen-focus">{currentWords.focus}</span> <span id="word-screen-after"> {currentWords.after.join(' ')}</span>
-         </div>
-      );
-   }
-});
+import WordScreen from './components/WordScreen';
 
 var TypeArea = React.createClass({
   getInitialState: function() {

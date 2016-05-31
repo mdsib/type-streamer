@@ -2,3 +2,4 @@ bower_components
 node_modules
 *.swp
 *.swo
+dist/bundle.js
